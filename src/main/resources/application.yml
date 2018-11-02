@@ -1,0 +1,9 @@
+server:
+  port: 9000
+
+cubic:
+  employees:
+    numbers: 200
+  partners:
+    numbers: 30
+   
