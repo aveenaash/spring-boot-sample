@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cubic.dtos.NewsDTO;
 import com.cubic.entities.NewsEntity;
 import com.cubic.repositories.NewsRepository;
+import com.mysql.jdbc.StringUtils;
 
 @Service
 public class NewsService {
@@ -33,15 +34,29 @@ public class NewsService {
 		return dtoList;
 	}
 	
-	private NewsDTO convert(NewsEntity entity) {
-		NewsDTO dto = new NewsDTO();
-		dto.setTitle(entity.getTitle());
-		dto.setContent(entity.getContent());
-		dto.setCreatorName(entity.getCreatorName());
-		dto.setTags(Arrays.asList(entity.getTags().split(",")));
-		dto.setCreatedAt(entity.getCreatedAt());
-		
+	public NewsDTO convert(NewsEntity entity) {
+		NewsDTO dto = null;
+		if(entity != null) {
+			dto = new NewsDTO();
+			dto.setTitle(entity.getTitle());
+			dto.setContent(entity.getContent());
+			dto.setCreatorName(entity.getCreatorName());
+			if(!StringUtils.isNullOrEmpty(entity.getTags())) {
+				dto.setTags(Arrays.asList(entity.getTags().split(",")));
+			}
+			dto.setCreatedAt(entity.getCreatedAt());
+		}
 		return dto;
+	}
+	
+	public int calculateTax(double income) {
+		int tax = 0;
+		if(income <= 45000) {
+			tax = (int) (0.07*income);
+		} else {
+			tax = (int) (0.07 * 45000 + 0.2 * (income - 45000));
+		}
+		return tax;
 	}
 
 }
